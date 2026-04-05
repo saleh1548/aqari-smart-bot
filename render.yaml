@@ -1,0 +1,44 @@
+services:
+  - type: worker
+    name: aqari-bot
+    runtime: python
+    plan: starter
+    buildCommand: pip install -r telegram-bot/requirements.txt
+    startCommand: python telegram-bot/bot.py
+    envVars:
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: ADMIN_CHAT_ID
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: PUBLISH_CHANNEL_USERNAME
+        sync: false
+      - key: SESSION_SECRET
+        sync: false
+      - key: GOOGLE_SHEETS_CREDENTIALS_JSON
+        sync: false
+      - key: GOOGLE_SHEET_ID
+        sync: false
+
+  - type: web
+    name: aqari-dashboard
+    runtime: python
+    plan: starter
+    buildCommand: pip install -r telegram-bot/requirements.txt
+    startCommand: gunicorn --chdir telegram-bot dashboard:app --bind 0.0.0.0:$PORT --workers 2 --timeout 60
+    envVars:
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: SESSION_SECRET
+        sync: false
+      - key: GOOGLE_SHEETS_CREDENTIALS_JSON
+        sync: false
+      - key: GOOGLE_SHEET_ID
+        sync: false
